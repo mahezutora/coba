@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Usulan Pekerjaan RKAP</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <div class="app-wrapper" id="app-wrapper">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-row" style="justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div style="display:flex; align-items:center; gap: 12px;">
+          <div class="brand-icon">
+            <svg width="20" height="20" viewBv cox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+              <polyline points="10 9 9 9 8 9" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="header-title">Portal Usulan Pekerjaan RKAP</h1>
+            <p class="subtitle">UPT Palembang • Formulir Entri Usulan Pekerjaan Baru</p>
+          </div>
+        </div>
+
+        <div class="header-actions" style="display:flex; align-items:center; gap: 10px; flex-wrap: wrap;">
+          <!-- Widget Status Login Akun -->
+          <div id="auth-status-container"></div>
+
+          <a href="rekap.html" class="btn btn-secondary btn-sm"
+            style="display:inline-flex; align-items:center; gap:6px; text-decoration:none; padding: 8px 14px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg>
+            <span>Cek Daftar Rekap</span>
+            <span class="nav-badge" id="nav-total-count" style="margin-left: 2px;">...</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+      <!-- ================= SECTION 1: FORMULIR INPUT USULAN ================= -->
+      <section id="form-section">
+        <div class="form-card">
+          <!-- Banner Status Akses Akun -->
+          <div id="auth-role-notice" style="display:none;"></div>
+
+          <form id="submission-form" onsubmit="handleSubmit(event)">
+
+            <div class="form-grid">
+
+              <!-- Row 1: Pengusul & Fungsi -->
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="pengusul">User / Pengusul <span class="required">*</span></label>
+                  <select id="pengusul" name="pengusul" required onchange="handlePengusulChange(this)">
+                    <option value="" disabled selected>-- Pilih Pengusul --</option>
+                    <option value="ULTG Keramasan">ULTG Keramasan</option>
+                    <option value="ULTG Borang">ULTG Borang</option>
+                    <option value="ULTG Betung">ULTG Betung</option>
+                    <option value="ULTG Boombaru">ULTG Boombaru</option>
+                    <option value="LAINNYA">Lainnya (Ketik Manual)...</option>
+                  </select>
+                  <input type="text" id="pengusul-custom" placeholder="Ketik nama unit pengusul..."
+                    style="display:none; margin-top: 6px;">
+                </div>
+
+                <div class="form-field">
+                  <label for="fungsi">Fungsi <span class="required">*</span></label>
+                  <select id="fungsi" name="fungsi" required>
+                    <option value="TRANSMISI" selected>TRANSMISI</option>
+                    <option value="TATA USAHA">TATA USAHA</option>
+                    <option value="DISTRIBUSI">DISTRIBUSI</option>
+                    <option value="K3L">K3L</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Judul Pekerjaan -->
+              <div class="form-field">
+                <label for="judul_pekerjaan">Judul Pekerjaan <span class="required">*</span></label>
+                <input type="text" id="judul_pekerjaan" name="judul_pekerjaan"
+                  placeholder="Contoh: Pengadaan Power Meter GI Talang Kelapa" required>
+              </div>
+
+              <!-- Ruang Lingkup Usulan -->
+              <div class="form-field">
+                <label for="ruang_lingkup">Usulan Pekerjaan / Ruang Lingkup <span class="required">*</span></label>
+                <textarea id="ruang_lingkup" name="ruang_lingkup"
+                  placeholder="Penjelasan rinci ruang lingkup usulan pekerjaan, spesifikasi, dan kebutuhan..."
+                  required></textarea>
+              </div>
+
+              <!-- Row 2: Lokasi & Nilai Perkiraan -->
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="lokasi">Lokasi Pekerjaan <span class="required">*</span></label>
+                  <input type="text" id="lokasi" name="lokasi"
+                    placeholder="Contoh: GI Talang Kelapa / SUTT 150kV Mariana - Borang" required>
+                </div>
+
+                <div class="form-field">
+                  <label for="nilai_perkiraan">Nilai Perkiraan (Rp)</label>
+                  <input type="text" id="nilai_perkiraan" name="nilai_perkiraan" placeholder="Contoh: Rp. 150.000.000"
+                    oninput="formatRupiahInput(this)">
+                </div>
+              </div>
+
+
+
+              <!-- ================= SECTION LAMPIRAN DOKUMEN ================= -->
+              <div class="attachment-container">
+                <div class="attachment-heading">
+                  <span>Link Berita Acara, Dokumentasi / Foto &amp; Hasil Asesmen <span class="required">*</span></span>
+                </div>
+
+                <!-- Switcher Mode -->
+                <div class="attachment-switcher">
+                  <button type="button" class="switcher-btn active" id="btn-mode-link"
+                    onclick="setAttachmentMode('link')">
+                    Link Google Drive (Folder / Dokumen)
+                  </button>
+                  <button type="button" class="switcher-btn" id="btn-mode-file" onclick="setAttachmentMode('file')">
+                    Unggah File Langsung (&lt; 20 MB)
+                  </button>
+                </div>
+
+                <!-- Opsi 1: Link Google Drive -->
+                <div id="link-upload-container">
+                  <div class="link-input-group">
+                    <input type="url" id="file-link-input"
+                      placeholder="https://drive.google.com/drive/folders/... atau link file Drive"
+                      oninput="resetLinkVerification()">
+                    <button type="button" class="btn-check-link" id="btn-check-link" onclick="handleVerifyLinkClick()">
+                      <span id="btn-check-text">Periksa Akses</span>
+                    </button>
+                  </div>
+
+                  <div id="link-status-badge" class="link-status-box" style="display:none;"></div>
+                </div>
+
+                <!-- Opsi 2: Upload File Fisik -->
+                <div id="file-upload-container" style="display:none;">
+                  <div class="dropzone" id="dropzone" onclick="document.getElementById('file-input').click()">
+                    <input type="file" id="file-input" style="display:none;" onchange="handleFileSelect(event)">
+
+                    <div id="dropzone-content">
+                      <div class="dropzone-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="17 8 12 3 7 8" />
+                          <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                      </div>
+                      <div class="dropzone-title">
+                        Pilih file berkas atau <span class="link-highlight">telusuri</span>
+                      </div>
+                      <div class="dropzone-sub">PDF, DOCX, ZIP, JPG (Maksimal 20 MB)</div>
+                    </div>
+                  </div>
+
+                  <!-- File Preview Box -->
+                  <div class="file-selected-box" id="file-preview" style="display:none;">
+                    <div class="file-info">
+                      <div class="file-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                          <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div class="file-name" id="preview-filename">berkas.pdf</div>
+                        <div class="file-size" id="preview-filesize">1.2 MB</div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn-remove" onclick="removeSelectedFile(event)" title="Hapus file">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- Upload Progress -->
+            <div class="progress-box" id="progress-container" style="display:none;">
+              <div class="progress-header">
+                <span id="progress-status">Mengirim data usulan...</span>
+                <span id="progress-percent">0%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-bar-fill" id="progress-bar-fill"></div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+              <button type="reset" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+              <button type="submit" class="btn btn-primary" id="btn-submit">Simpan Usulan Pekerjaan</button>
+            </div>
+
+          </form>
+        </div>
+      </section>
+
+      <!-- ================= SECTION 2: STRUK SUKSES ================= -->
+      <section id="success-section" style="display:none;">
+        <div class="form-card success-card">
+          <div class="success-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h2 class="success-title">Usulan Berhasil Dicatat!</h2>
+          <p class="success-desc">Data usulan pekerjaan telah berhasil ditambahkan ke sheet <strong>REKAP
+              USULAN</strong>.</p>
+
+          <div class="receipt-box">
+            <div class="receipt-item">
+              <span class="receipt-label">Nomor Usulan</span>
+              <strong class="receipt-value" id="receipt-no" style="font-size: 1.1rem; color: #2563eb;">-</strong>
+            </div>
+            <div class="receipt-item">
+              <span class="receipt-label">Judul Pekerjaan</span>
+              <span class="receipt-value" id="receipt-judul">-</span>
+            </div>
+            <div class="receipt-item">
+              <span class="receipt-label">Pengusul</span>
+              <span class="receipt-value" id="receipt-pengusul">-</span>
+            </div>
+            <div class="receipt-item">
+              <span class="receipt-label">Waktu Tercatat</span>
+              <span class="receipt-value" id="receipt-time">-</span>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:center; gap: 10px; flex-wrap: wrap;">
+            <a href="rekap.html" class="btn btn-secondary" style="text-decoration:none;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="20" x2="18" y2="10" />
+                <line x1="12" y1="20" x2="12" y2="4" />
+                <line x1="6" y1="20" x2="6" y2="14" />
+              </svg>
+              <span>Lihat di Daftar Rekap &rarr;</span>
+            </a>
+            <button type="button" class="btn btn-primary" onclick="showNewForm()">
+              + Buat Usulan Lain
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <span>Portal Usulan RKAP • UPT Palembang</span>
+      <div style="display:flex; gap:12px; align-items:center;">
+        <a href="rekap.html" style="color:var(--text-muted); font-size:0.78rem; text-decoration:none;">Cek Daftar Rekap
+          &rarr;</a>
+        <span>•</span>
+        <button type="button" class="settings-btn" onclick="openConfigModal()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+          Pengaturan Web App URL
+        </button>
+      </div>
+    </footer>
+
+    <!-- Settings Modal -->
+    <div class="modal-backdrop" id="config-modal">
+      <div class="modal-window" style="max-width: 540px;">
+        <div class="modal-header">
+          <h3>Pengaturan Google Apps Script URL</h3>
+          <p>Masukkan URL Web App dari Google Apps Script untuk menghubungkan formulir ke spreadsheet <strong>REKAP
+              USULAN</strong>.</p>
+        </div>
+
+        <div class="form-field" style="margin-bottom: 12px;">
+          <label style="font-size:0.85rem; font-weight:600; display:block; margin-bottom:6px;">URL Web App
+            (/exec):</label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="script-url-input" placeholder="https://script.google.com/macros/s/.../exec"
+              style="flex:1;" oninput="clearTestResult()">
+            <button type="button" class="btn btn-secondary" id="btn-test-url" onclick="handleTestConnection()"
+              style="white-space:nowrap; padding: 8px 14px;">
+              <span id="btn-test-text">Tes Koneksi</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Connection Test Result Box -->
+        <div id="url-test-result"
+          style="display:none; padding:12px; border-radius:8px; font-size:0.82rem; margin-bottom:16px; line-height:1.5;">
+        </div>
+
+        <div
+          style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px 14px; margin-bottom:18px; font-size:0.78rem; color:#64748b; line-height:1.5;">
+          <strong>💡 Tips jika muncul "Failed to fetch":</strong>
+          <ul style="margin:4px 0 0 16px; padding:0;">
+            <li>Pastikan saat Deploy, opsi <strong>Who has access (Yang memiliki akses)</strong> disetel ke
+              <strong>Anyone (Siapa saja)</strong>.</li>
+            <li>URL harus berakhiran <code>/exec</code> (bukan <code>/edit</code> atau link spreadsheet).</li>
+            <li>Pastikan otorisasi akun Google (Review permissions) sudah di-izinkan (Allow).</li>
+          </ul>
+        </div>
+
+        <!-- Bagian Supabase Cloud Database (Opsional) -->
+        <div style="border-top:1px dashed #cbd5e1; padding-top:14px; margin-top:14px; margin-bottom:18px;">
+          <h4 style="font-size:0.88rem; font-weight:700; color:#0f172a; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+            <span>⚡ Konfigurasi Supabase Database (Opsional)</span>
+          </h4>
+          <p style="font-size:0.78rem; color:#64748b; margin-bottom:12px;">
+            Jika sudah membuat proyek Supabase, masukkan Project URL &amp; Anon Key agar data otomatis tersinkronisasi.
+          </p>
+          <div class="form-field" style="margin-bottom:8px;">
+            <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">Supabase Project URL:</label>
+            <input type="text" id="supabase-url-input" placeholder="https://abcdefghijkl.supabase.co" style="width:100%;">
+          </div>
+          <div class="form-field">
+            <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">Supabase Anon Key (Public):</label>
+            <input type="password" id="supabase-key-input" placeholder="eyJhbGciOi..." style="width:100%;">
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" class="btn btn-secondary" onclick="closeConfigModal()">Batal</button>
+          <button type="button" class="btn btn-primary" onclick="saveConfigUrl()">Simpan Pengaturan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+      <span id="toast-msg">Notifikasi</span>
+    </div>
+
+  </div>
+
+  <!-- Supabase JS Client & Konfigurasi -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
